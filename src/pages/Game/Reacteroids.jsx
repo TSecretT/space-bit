@@ -49,7 +49,7 @@ export default class Reacteroidss extends Component {
 			},
 			asteroidCount: 3,
 			currentScore: 0,
-			topScore: localStorage['topscore'] || 0,
+			topScore: localStorage['spacebit_total_score'] || 0,
 			inGame: false
 		}
 		this.ship = [];
@@ -170,7 +170,7 @@ export default class Reacteroidss extends Component {
 
 	gameOver(){
 		this.setState({
-		inGame: false,
+			inGame: false,
 		});
 
 		// Replace top score
@@ -178,7 +178,7 @@ export default class Reacteroidss extends Component {
 		this.setState({
 			topScore: this.state.currentScore,
 		});
-		localStorage['topscore'] = this.state.currentScore;
+		localStorage['spacebit_total_score'] = this.state.currentScore;
 		}
 	}
 

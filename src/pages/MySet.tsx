@@ -47,16 +47,33 @@ const MySet = () => {
   }, [])
 
   return (
-    <div>
+    <div className="m-auto max-w-5xl">
 
       <div className="flex flex-col lg:flex-row">
-        <section className="w-full lg:w-1/2">
-          <h2>Your stats</h2>
-          <p>Total score: 1231231</p>
+        <section className="w-full lg:w-1/3">
+          <h2>Your stats 📘</h2>
+          <p>Total score: {localStorage.spacebit_total_score || 0}</p>
         </section>
 
-        <section className="w-full lg:w-1/2">
-          <h2>Current Ship</h2>
+        <section className="w-full lg:w-1/3">
+          <h2>Current streak 🏅</h2>
+          <p >
+            Each streak number adds a 0.1 multiplier to your game score.
+            Play at least once game per day to earn the streak.
+          </p>
+          {
+            localStorage.spacebit_streak ? 
+            <p className="text-primary text-xl mt-4">
+              Your current streak is <strong>{localStorage.spacebit_streak}</strong> 🏆
+            </p> :
+            <p className="text-primary">
+              You dont have any streak. 
+            </p> 
+          }
+        </section>
+
+        <section className="w-full lg:w-1/3">
+          <h2>Current ship 🚀</h2>
           <div className="bg-black w-[256px] p-4 m-2 rounded-md shadow-lg shadow-primary">
             <img className="" src={ships[4]} />
             <p className="text-white text-center mt-2">{rarity[4].toLocaleUpperCase()}</p>
@@ -65,7 +82,7 @@ const MySet = () => {
       </div>
 
         <section>
-          <h2>Current progress</h2>
+          <h2>Current progress 📈</h2>
           
           <p>You need <strong>234</strong> points for next level</p>
           <ul className="w-full steps steps-vertical lg:steps-horizontal">
@@ -76,7 +93,7 @@ const MySet = () => {
         </section>
 
         <section>
-          <h2>All unlockables</h2>
+          <h2>All unlockables 🎖🎖🎖</h2>
           <div className='w-full flex flex-row lg:justify-center lg:flex-row'>
             {ships.map((url, i) => <Ship color={colors[i]} unlocked={i < 3} url={url} name={rarity[i]} />  )}
           </div>

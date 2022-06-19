@@ -28,9 +28,9 @@ const Home = () => {
 
 
     return (
-        <div style={{ backgroundImage: "url(../assets/space-wallpaper.png)" }}>
+        <div>
             <section>
-                <div className="max-w-screen-xl px-4 py-32 mx-auto lg:h-screen lg:items-center lg:flex">
+                <div className="px-4 py-32 mx-auto lg:h-screen lg:items-center lg:flex">
                     <div className="max-w-xl mx-auto text-center">
                     <h1 className="text-3xl font-extrabold sm:text-5xl">
                         BitSpace Marketplace
