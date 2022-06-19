@@ -36,7 +36,7 @@ export default class Ship {
     this.onDie = args.onDie;
     this.delete = false;
     this.image = new Image(50, 50);
-    this.image.src = ship
+    this.image.src = args.shipURL || ship
   }
 
   destroy(){

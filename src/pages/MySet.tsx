@@ -24,11 +24,17 @@ const colors = [
   'gold'
 ]
 
+const MULTIPLIER = 0.1
+
+const onShipSelect = (url: string) => {
+  localStorage.setItem('spacebit_ship', url)
+}
+
 const Ship = ({url, name, unlocked, color}: {url: string, name: string, unlocked: boolean, color: string}) => {
   return <div className={` m-1 w-[128px] pt-4 rounded-md flex flex-col items-center bg-black`}>
     <img src={url} className="w-[64px]" />
     <p className="text-white text-xs mt-2">{name.toUpperCase()}</p>
-    <button className={`btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 ${unlocked? 'bg-black' : 'bg-primary'}`}>{unlocked ? "unlocked" : "get" }</button>
+    <button onClick={() => onShipSelect(url)} className={`btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 ${unlocked? 'bg-black' : 'bg-primary'}`}>{unlocked ? "unlocked" : "get" }</button>
   </div>
 }
 
@@ -41,6 +47,8 @@ const MySet = () => {
     const assets = rarity.map((rar) => require(`../assets/ships/ship-${rar}.png`))
     setShips(assets)
   }
+
+  
 
   useEffect(() => {
     load()
@@ -58,13 +66,13 @@ const MySet = () => {
         <section className="w-full lg:w-1/3">
           <h2>Current streak 🏅</h2>
           <p >
-            Each streak number adds a 0.1 multiplier to your game score.
+            Each streak number adds <strong>{`x${MULTIPLIER}`}</strong> multiplier to your game score.
             Play at least once game per day to earn the streak.
           </p>
           {
             localStorage.spacebit_streak ? 
-            <p className="text-primary text-xl mt-4">
-              Your current streak is <strong>{localStorage.spacebit_streak}</strong> 🏆
+            <p className="text-primary text-lg mt-4">
+              Your current streak is <strong>{localStorage.spacebit_streak}</strong> (x{localStorage.spacebit_streak * MULTIPLIER}) 🏆
             </p> :
             <p className="text-primary">
               You dont have any streak. 
@@ -94,7 +102,7 @@ const MySet = () => {
 
         <section>
           <h2>All unlockables 🎖🎖🎖</h2>
-          <div className='w-full flex flex-row lg:justify-center lg:flex-row'>
+          <div className='w-full flex flex-col lg:justify-center lg:flex-row'>
             {ships.map((url, i) => <Ship color={colors[i]} unlocked={i < 3} url={url} name={rarity[i]} />  )}
           </div>
         </section>

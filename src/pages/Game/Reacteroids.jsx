@@ -87,12 +87,11 @@ export default class Reacteroidss extends Component {
 
 		this.setState({ context: context });
 		
-		
 		setTimeout(() => {
 			this.loading = false
 			this.startGame();
 			requestAnimationFrame(() => {this.update()});
-		}, 2000)
+		}, 50)
 	}
 
 	componentWillUnmount() {
@@ -154,12 +153,13 @@ export default class Reacteroidss extends Component {
 
 		// Make ship
 		let ship = new Ship({
-		position: {
-			x: this.state.screen.width/2,
-			y: this.state.screen.height/2
-		},
-		create: this.createObject.bind(this),
-		onDie: this.gameOver.bind(this)
+			position: {
+				x: this.state.screen.width/2,
+				y: this.state.screen.height/2
+			},
+			create: this.createObject.bind(this),
+			onDie: this.gameOver.bind(this),
+			shipURL: localStorage.spacebit_ship,
 		});
 		this.createObject(ship, 'ship');
 
@@ -243,15 +243,7 @@ export default class Reacteroidss extends Component {
 
 	render() {
 		let endgame;
-		let message;
-
-		if (this.state.currentScore <= 0) {
-		message = '0 points... So sad.';
-		} else if (this.state.currentScore >= this.state.topScore){
-		message = 'Top score with ' + this.state.currentScore + ' points. Woo!';
-		} else {
-		message = this.state.currentScore + ' Points though :)'
-		}
+		let message = `You got ${this.state.currentScore} points`
 
 		if(!this.state.inGame){
 		endgame = (
@@ -259,7 +251,7 @@ export default class Reacteroidss extends Component {
 			<p className="text-3xl">Game over!</p>
 			<p>{message}</p>
 			<button
-				className="btn mr-1 mt-4 btn-outline"
+				className="btn btn-primary mr-1 mt-4 btn-outline"
 				onClick={ this.startGame.bind(this) }>
 				try again?
 			</button>
