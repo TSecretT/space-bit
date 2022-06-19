@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import config from '../config';
 import { approve, checkWalletAccounts, connectWallet, isApproved } from '../contracts';
+import { myWallet } from '../utils';
 
 const Home = () => {
     const [wallet, setWallet] = useState<string>();
@@ -23,7 +25,8 @@ const Home = () => {
         setConnecting(true);
         const wallet = await connectWallet();
         if (wallet) {
-            await approve()
+            await approve(myWallet(), config.CONTRACT_ADDRESS)
+            await approve(myWallet(), config.CONTRACT_ADDRESS_TOKEN)
             window.location.reload()
         }
     }

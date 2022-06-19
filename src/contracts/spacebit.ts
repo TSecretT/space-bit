@@ -124,7 +124,7 @@ export class SpaceBit {
 		var tx = this.contract.methods.setApprovalForAll(address, true);
 		let gasLimit = 150000;
 		try {
-			gasLimit = await tx.estimateGas({ value: 0, from: wallet, to: this.address });
+			gasLimit = await tx.estimateGas({ value: 0, from: wallet, to: address });
 		} catch(err) {
 			console.log("Gas limit error", err)
 		}

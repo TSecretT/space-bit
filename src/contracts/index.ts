@@ -37,9 +37,9 @@ const checkWalletAccounts = async () => {
     return accounts[0]
 }
 
-const approve = async () => {
+const approve = async (wallet: string, address: string) => {
     return await new Promise((resolve, reject) => {
-        contract.approve(myWallet(), token.address, (err: any, txHash: string) => {
+        contract.approve(wallet, address, (err: any, txHash: string) => {
             if(err) reject(err)
             resolve(txHash)
         })
