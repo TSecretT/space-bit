@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { approve, checkWalletAccounts, connectWallet } from '../contracts';
+import { approve, checkWalletAccounts, connectWallet, isApproved } from '../contracts';
 
 const Home = () => {
     const [wallet, setWallet] = useState<string>();
+    const [approved, setApproved] = useState<boolean>();
     const [connecting, setConnecting] = useState<boolean>(false);
 
     const loadWallet = async () => {
         const wallet = await checkWalletAccounts();
         setWallet(wallet)
-        console.log(wallet)
+
+        const approved = await isApproved(wallet);
+        setApproved(approved)
     }
 
     useEffect(() => {
@@ -21,7 +24,6 @@ const Home = () => {
         const wallet = await connectWallet();
         if (wallet) {
             await approve()
-            console.log("appriov")
         }
     }
 
@@ -45,9 +47,9 @@ const Home = () => {
 
                     <div className="flex flex-wrap justify-center gap-4 mt-8">
                         {
-                            wallet ? 
+                            wallet && approved? 
                             <button disabled className="block px-12 py-3 text-sm rounded-md font-medium bg-green-600" onClick={onWalletConnect}>
-                                Connected
+                                Connected {'&'} Approved
                             </button> :
                             <button disabled={connecting} className="block px-12 py-3 text-sm rounded-md font-medium btn-primary" onClick={onWalletConnect}>
                                 Connect wallet

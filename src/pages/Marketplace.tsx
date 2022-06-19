@@ -18,11 +18,14 @@ const Marketplace = () => {
     }, [])
 
   return (
-    <div className="p-5 w-full">
+    <div className="m-auto w-10/12">
         
-        <div className="w-full flex flex-row flex-wrap justify-center">
+        <div className="flex flex-row w-full justify-end mt-10">
+            <button className="btn btn-primary btn-sm">Add item</button>
+        </div>
+        <div className="w-full flex flex-row flex-wrap justify-between">
             {items.map((item, i) => 
-                <div key={item} className="flex flex-col m-2 p-2 shadow-2xl w-52 rounded-md border-gray border-2 space-y-2 min-h-[256px]">
+                <div key={item} className="flex flex-col my-2 p-2 shadow-2xl w-52 rounded-md border-gray border-2 space-y-2 min-h-[256px]">
                     <img className='' src={item.image} />
                     <p className="h-24">{item.name}</p>
                     <div className="mt-10 flex flex-row items-center justify-between">

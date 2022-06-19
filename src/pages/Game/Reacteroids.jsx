@@ -2,6 +2,8 @@ import React, { Component, useState } from 'react';
 import Ship from './Ship';
 import Asteroid from './Asteroid';
 import { randomNumBetweenExcluding } from './helpers'
+import { checkWalletAccounts, token } from '../../contracts';
+import { addGameResult } from '../../api/api';
 
 const KEY = {
   LEFT:  37,
@@ -50,13 +52,16 @@ export default class Reacteroidss extends Component {
 			asteroidCount: 3,
 			currentScore: 0,
 			topScore: localStorage['spacebit_total_score'] || 0,
-			inGame: false
+			inGame: false,
+			submitting: false,
+			error: null,
+			txHash: null,
 		}
 		this.ship = [];
 		this.asteroids = [];
 		this.bullets = [];
 		this.particles = [];
-		this.loading = true
+		this.loading = true;
 	}
 
 	handleResize(value, e){
@@ -137,18 +142,23 @@ export default class Reacteroidss extends Component {
 		requestAnimationFrame(() => {this.update()});
 	}
 
+	getMultiplier(){
+		return (1 + localStorage.spacebit_streak * 0.1)
+	}
+
 	addScore(points){
 		if(this.state.inGame){
 		this.setState({
-			currentScore: this.state.currentScore + points,
+			currentScore: this.state.currentScore + points * this.getMultiplier(),
 		});
 		}
 	}
 
 	startGame(){
 		this.setState({
-		inGame: true,
-		currentScore: 0,
+			inGame: true,
+			currentScore: 0,
+			error: null
 		});
 
 		// Make ship
@@ -168,9 +178,11 @@ export default class Reacteroidss extends Component {
 		this.generateAsteroids(this.state.asteroidCount)
 	}
 
-	gameOver(){
+	async gameOver(){
+		this.submitting = true
 		this.setState({
 			inGame: false,
+			submitting: true
 		});
 
 		// Replace top score
@@ -180,6 +192,9 @@ export default class Reacteroidss extends Component {
 		});
 		localStorage['spacebit_total_score'] = this.state.currentScore;
 		}
+
+		await addGameResult(localStorage.spacebit_wallet, this.state.currentScore)
+		.then(() => this.setState({submitting: false}))
 	}
 
 	generateAsteroids(howMany){
@@ -246,44 +261,53 @@ export default class Reacteroidss extends Component {
 		let message = `You got ${this.state.currentScore} points`
 
 		if(!this.state.inGame){
-		endgame = (
-			<div className="endgame">
-			<p className="text-3xl">Game over!</p>
-			<p>{message}</p>
-			<button
-				className="btn btn-primary mr-1 mt-4 btn-outline"
-				onClick={ this.startGame.bind(this) }>
-				try again?
-			</button>
-
-			<a href="/">
+			endgame = (
+				<div className="endgame">
+				<p className="text-3xl">Game over!</p>
+				<p>{message}</p>
+				{
+					this.state.submitting ?
+					<p className="text-warning">Submitting results...</p> :
+					<p className="text-success">Results submitted</p>
+				}
+				{ this.state.error && <p className="text-red-400" >{this.state.error}</p> }
+				{ this.state.txHash && <p>Transaction hash: {this.state.txHash}</p> }
 				<button
-					className="btn mr-1"
-				>
-					Back to main page
+					disabled={this.state.submitting}
+					className="btn btn-primary mr-1 mt-4 btn-outline"
+					onClick={ this.startGame.bind(this) }>
+					try again?
 				</button>
-			</a>
-			</div>
-		)
+
+				<a href="/">
+					<button
+						className="btn mr-1"
+					>
+						Back to main page
+					</button>
+				</a>
+				</div>
+			)
 		}
 
 		return (
-		<div className="game-page">
-			{ this.loading && <LoadingModal /> }			
-			{ endgame }
-			<div className="score">
-				<p>Score: {this.state.currentScore}</p>
-				<p>Top Score: {this.state.topScore}</p>
+			<div className="game-page">
+				{ this.loading && <LoadingModal /> }			
+				{ endgame }
+				<div className="score">
+					<p>Score: {this.state.currentScore}</p>
+					<p>Top Score: {this.state.topScore}</p>
+					<p>Streak multiplier: x{this.getMultiplier()}</p>
+				</div>
+				<span className="controls" >
+				Use [A][S][W][D] or [←][↑][↓][→] to MOVE<br/>
+				Use [SPACE] to SHOOT
+				</span>
+				<canvas ref="canvas"
+					width={this.state.screen.width * this.state.screen.ratio}
+					height={this.state.screen.height * this.state.screen.ratio}
+				/>
 			</div>
-			<span className="controls" >
-			Use [A][S][W][D] or [←][↑][↓][→] to MOVE<br/>
-			Use [SPACE] to SHOOT
-			</span>
-			<canvas ref="canvas"
-				width={this.state.screen.width * this.state.screen.ratio}
-				height={this.state.screen.height * this.state.screen.ratio}
-			/>
-		</div>
 		);
 	}
 }

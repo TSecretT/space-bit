@@ -2,21 +2,25 @@ import Lemon from './lemon';
 import LemonToken from './lemonToken';
 
 import config from '../config';
+import { SpaceBit } from './spacebit';
+import Token from './token';
+import NFT from './nft';
 
-const contract: any = new Lemon(config.CONTRACT_ADDRESS_W_L);
-const token: any = new LemonToken(config.TOKEN_CONTRACT);
+const contract: any = new SpaceBit(config.CONTRACT_ADDRESS);
+const token: any = new Token(config.CONTRACT_ADDRESS_TOKEN);
+const nft: any = new NFT(config.CONTRACT_ADDRESS_NFT);
 
-const isApproved = async (wallet: string) => {
-    const allowed: any = await token.allowance(localStorage.wallet, config.CONTRACT_ADDRESS);
-    if(allowed){
-        return true;
-    } else {
-        return await new Promise((resolve, reject) => token.approveMax(localStorage.wallet, config.CONTRACT_ADDRESS, (err: any, txHash: string) => {
-            if(err) reject(false);
-            resolve(true)
-        }))
-    }
-
+const isApproved = async (wallet: string|undefined): Promise<boolean> => {
+    // const allowed: any = await token.allowance(wallet || localStorage.spacebit_wallet, config.CONTRACT_ADDRESS);
+    // if(allowed){
+    //     return true;
+    // } else {
+    //     return await new Promise((resolve, reject) => token.approveMax(localStorage.spacebit_wallet, config.CONTRACT_ADDRESS, (err: any, txHash: string) => {
+    //         if(err) reject(false);
+    //         resolve(true)
+    //     }))
+    // }
+    return true
 }
 
 const connectWallet = async () => {
@@ -33,15 +37,16 @@ const checkWalletAccounts = async () => {
 }
 
 const approve = async () => {
-    return await new Promise((resolve, reject) => token.approveMax(localStorage.wallet, config.CONTRACT_ADDRESS_W_L, (err: any, txHash: string) => {
-        if(err) {console.error(err); return reject() }
-        resolve(txHash);
-    }));
+    // return await new Promise((resolve, reject) => token.approveMax(localStorage.wallet, config.CONTRACT_ADDRESS, (err: any, txHash: string) => {
+    //     if(err) {console.error(err); return reject() }
+    //     resolve(txHash);
+    // }));
 }
 
 export {
     contract,
     token,
+    nft,
     isApproved,
     connectWallet,
     checkWalletAccounts,
