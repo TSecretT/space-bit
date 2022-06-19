@@ -65,9 +65,10 @@ export class NFT {
 		}, (err: any, txHash: string) => callback(err, txHash) );
 	}
 	
-	async buy(sender: string, id: string|number, callback: any){
+	async buy(sender: string, id: number, callback: any){
 		let gasPrice = await this.gasPrice();
-		const tx = this.contract.methods.buy_spaceship(id);
+		console.log(id)
+		const tx = this.contract.methods.buy_spaceship(id-1);
 		let gasLimit = 150000;
 		try {
 			gasLimit = await tx.estimateGas({ value: 0, from: sender, to: this.address });
@@ -79,7 +80,6 @@ export class NFT {
 			gasPrice: gasPrice,
 			gas: Math.round(gasLimit * 1.1)
 		}, (err: any, txHash: string) => callback(err, txHash) );
-
 	}
 
 	async getIds(){

@@ -25,19 +25,19 @@ const ships = [
     name: 'rare',
     color: '#4b69ff',
     id: 3,
-    price: 300
+    price: 500
   },
   {
     name: 'mythical',
     color: '#8847ff',
     id: 4,
-    price: 500
+    price: 2000
   },
   {
     name: 'legendary',
     color: '#d32ce6',
     id: 5,
-    price: 1000
+    price: 4000
   },
   {
     name: 'immortal',
@@ -82,7 +82,7 @@ const MySet = () => {
       
       {
         unlocked ? 
-        <button onClick={() => onShipSelect(ships.find((ship: any) => ship.id === id)) } className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-black">unlocked</button>
+        <button onClick={() => onShipSelect(ships.find((ship: any) => ship.id === id)) } className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-black">select</button>
         : score && (score >= price) ? 
           <button onClick={() => onBuy()} className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">buy</button>
         : <button className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">{score}/{price}</button>
@@ -174,10 +174,10 @@ const MySet = () => {
 
         <section className="w-full lg:w-1/3">
           <h2>Current ship 🚀</h2>
-          {selectedShip && <div className="bg-black w-[256px] p-4 m-2 rounded-md shadow-lg shadow-primary">
+          {selectedShip ? <div className="bg-black w-[256px] p-4 m-2 rounded-md shadow-lg shadow-primary">
               <img className="" src={require(`../assets/ships/ship-${selectedShip.name}.png`)} />
               <p className="text-white text-center mt-2">{selectedShip.name.toLocaleUpperCase()}</p>
-            </div>
+            </div> : <p>Select any of your owned ships by clicking <strong>select</strong></p>
           }
         </section>
       </div>
@@ -186,7 +186,7 @@ const MySet = () => {
           <h2>Current progress 📈</h2>
           
           {/* <p>You need <strong>234</strong> points for next level</p> */}
-          <ul className="w-full steps text-white steps-vertical lg:steps-horizontal">
+          <ul className="w-full steps steps-vertical lg:steps-horizontal">
             {ships.map((ship, i) => <li className={`step text-sm ${unlocks && unlocks[i] != '0'? 'step-primary' : ''}`}>
               <span>{ship.name.toUpperCase()}</span>
             </li> )}

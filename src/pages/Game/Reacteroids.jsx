@@ -4,6 +4,7 @@ import Asteroid from './Asteroid';
 import { randomNumBetweenExcluding } from './helpers'
 import { checkWalletAccounts, token } from '../../contracts';
 import { addGameResult } from '../../api/api';
+import { myWallet } from '../../utils';
 
 const KEY = {
   LEFT:  37,
@@ -193,8 +194,10 @@ export default class Reacteroidss extends Component {
 		localStorage['spacebit_total_score'] = this.state.currentScore;
 		}
 
-		await addGameResult(localStorage.spacebit_wallet, this.state.currentScore)
-		.then(() => this.setState({submitting: false}))
+		if(myWallet()){
+			await addGameResult(localStorage.spacebit_wallet, this.state.currentScore)
+			.then(() => this.setState({submitting: false}))
+		}
 	}
 
 	generateAsteroids(howMany){

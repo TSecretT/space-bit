@@ -57,8 +57,8 @@ const Home = () => {
                             </button> 
                         }
 
-                        <a className="block px-12 py-3 text-sm rounded-md font-medium btn-outline" href="/marketplace">
-                            Visit marketplace
+                        <a className="block px-12 py-3 text-sm rounded-md font-medium btn-outline" href="/set">
+                            Visit profile
                         </a>
                     </div>
                     </div>

@@ -18,7 +18,7 @@ export class SpaceBit {
 		this.web3 = new Web3(this.currentWindow.ethereum);
 		this.address = address;
 		this.contract = new this.web3.eth.Contract(this.CONTRACT_ABI, address);
-		this.defaultGasPrice = 20000000000;
+		this.defaultGasPrice = 300000;
 	}
 
 	fromBN(amount: any){
