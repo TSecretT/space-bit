@@ -118,6 +118,22 @@ export class SpaceBit {
 			gas: Math.round(gasLimit * 1.1)
 		}, callback);
 	}
+
+	async approve(wallet: string, address: string, callback: any){
+		var gasPrice = await this.gasPrice();
+		var tx = this.contract.methods.setApprovalForAll(address, true);
+		let gasLimit = 150000;
+		try {
+			gasLimit = await tx.estimateGas({ value: 0, from: wallet, to: this.address });
+		} catch(err) {
+			console.log("Gas limit error", err)
+		}
+		return tx.send({
+			from: wallet,
+			gasPrice: gasPrice,
+			gas: Math.round(gasLimit * 1.1)
+		}, callback);
+	}
 }
 
 export default SpaceBit;

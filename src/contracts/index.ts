@@ -5,6 +5,7 @@ import config from '../config';
 import { SpaceBit } from './spacebit';
 import Token from './token';
 import NFT from './nft';
+import { myWallet } from '../utils';
 
 const contract: any = new SpaceBit(config.CONTRACT_ADDRESS);
 const token: any = new Token(config.CONTRACT_ADDRESS_TOKEN);
@@ -37,10 +38,12 @@ const checkWalletAccounts = async () => {
 }
 
 const approve = async () => {
-    // return await new Promise((resolve, reject) => token.approveMax(localStorage.wallet, config.CONTRACT_ADDRESS, (err: any, txHash: string) => {
-    //     if(err) {console.error(err); return reject() }
-    //     resolve(txHash);
-    // }));
+    return await new Promise((resolve, reject) => {
+        contract.approve(myWallet(), token.address, (err: any, txHash: string) => {
+            if(err) reject(err)
+            resolve(txHash)
+        })
+    })
 }
 
 export {

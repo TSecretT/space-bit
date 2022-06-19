@@ -143,7 +143,7 @@ export default class Reacteroidss extends Component {
 	}
 
 	getMultiplier(){
-		return (1 + localStorage.spacebit_streak * 0.1)
+		return (1 + localStorage.spacebit_streak * 0.1) || 1
 	}
 
 	addScore(points){
@@ -169,7 +169,7 @@ export default class Reacteroidss extends Component {
 			},
 			create: this.createObject.bind(this),
 			onDie: this.gameOver.bind(this),
-			shipURL: localStorage.spacebit_ship,
+			shipURL: localStorage.spacebit_ship_url,
 		});
 		this.createObject(ship, 'ship');
 
@@ -279,7 +279,7 @@ export default class Reacteroidss extends Component {
 					try again?
 				</button>
 
-				<a href="/">
+				<a href="/set">
 					<button
 						className="btn mr-1"
 					>

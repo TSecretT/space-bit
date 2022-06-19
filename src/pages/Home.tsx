@@ -24,6 +24,7 @@ const Home = () => {
         const wallet = await connectWallet();
         if (wallet) {
             await approve()
+            window.location.reload()
         }
     }
 

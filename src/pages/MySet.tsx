@@ -60,7 +60,7 @@ const ships = [
 ]
 
 const MySet = () => {
-  const [selectedShip, setSelectedShip] = useState<string>(localStorage.spacebit_ship);
+  const [selectedShip, setSelectedShip] = useState<any>();
   const [score, setScore] = useState<number>(0);
   const [results, setResults] = useState<number>();
   const [unlocks, setUnlocks] = useState<string[]>();
@@ -82,7 +82,7 @@ const MySet = () => {
       
       {
         unlocked ? 
-        <button onClick={() => onShipSelect(url) } className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-black">unlocked</button>
+        <button onClick={() => onShipSelect(ships.find((ship: any) => ship.id === id)) } className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-black">unlocked</button>
         : score && (score >= price) ? 
           <button onClick={() => onBuy()} className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">buy</button>
         : <button className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">{score}/{price}</button>
@@ -90,9 +90,10 @@ const MySet = () => {
     </div>
   }
 
-  const onShipSelect = (url: string) => {
-    setSelectedShip(url)
-    localStorage.setItem('spacebit_ship', url)
+  const onShipSelect = (ship: any) => {
+    setSelectedShip(ship)
+    localStorage.setItem('spacebit_ship', ship.id)
+    localStorage.setItem('spacebit_ship_url', require(`../assets/ships/ship-${ship.name}.png`))
   }
 
   const getScores = async () => {
@@ -102,6 +103,8 @@ const MySet = () => {
 
   const load = async () => {
     
+    if(localStorage.spacebit_ship) setSelectedShip(ships.find((ship: any) => ship.id === parseInt(localStorage.spacebit_ship)))
+
     const score = await contract.balanceOf(localStorage.spacebit_wallet, 1)
     setScore(score);
 
@@ -118,7 +121,10 @@ const MySet = () => {
 
   const onClaim = async () => {
     await token.getReward(myWallet(), results, async (err: any, txHash: string) => {
-      if(txHash) await claimResults(myWallet())
+      if(txHash){
+        await claimResults(myWallet())
+        window.location.reload()
+      }
 		})
   }
 
@@ -168,10 +174,11 @@ const MySet = () => {
 
         <section className="w-full lg:w-1/3">
           <h2>Current ship 🚀</h2>
-          <div className="bg-black w-[256px] p-4 m-2 rounded-md shadow-lg shadow-primary">
-            <img className="" src={selectedShip} />
-            <p className="text-white text-center mt-2">{ships[4].name.toLocaleUpperCase()}</p>
-          </div>
+          {selectedShip && <div className="bg-black w-[256px] p-4 m-2 rounded-md shadow-lg shadow-primary">
+              <img className="" src={require(`../assets/ships/ship-${selectedShip.name}.png`)} />
+              <p className="text-white text-center mt-2">{selectedShip.name.toLocaleUpperCase()}</p>
+            </div>
+          }
         </section>
       </div>
 

@@ -13,7 +13,7 @@ const Header = () => {
     }
 
     const checkFreeRedeemed = async () => {
-        setFreeRedeemed(await contract.balanceOf(myWallet(), 1) != '0')
+        setFreeRedeemed(await contract.balanceOf(myWallet(), 2) != '0')
     }
     
     const onRedeemCallback = (err: any, txHash: string) => {

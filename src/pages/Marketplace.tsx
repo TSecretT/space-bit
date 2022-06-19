@@ -19,7 +19,6 @@ const Marketplace = () => {
 
   return (
     <div className="m-auto w-10/12">
-        
         <div className="flex flex-row w-full justify-end mt-10">
             <button className="btn btn-primary btn-sm">Add item</button>
         </div>
