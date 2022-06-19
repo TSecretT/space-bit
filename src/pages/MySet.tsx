@@ -12,42 +12,50 @@ const ships = [
   {
     name: 'common',
     color: '#b0c3d9',
-    id: 1
+    id: 1,
+    price: 50
   },
   {
     name: 'uncommon',
     color: '#5e98d9',
-    id: 2
+    id: 2,
+    price: 100
   },
   {
     name: 'rare',
     color: '#4b69ff',
-    id: 3
+    id: 3,
+    price: 300
   },
   {
     name: 'mythical',
     color: '#8847ff',
-    id: 4
+    id: 4,
+    price: 500
   },
   {
     name: 'legendary',
     color: '#d32ce6',
-    id: 5
+    id: 5,
+    price: 1000
   },
   {
     name: 'immortal',
     color: '#b28a33',
-    id: 6
+    id: 6,
+    price: 5000
   },
   {
     name: 'ancient',
     color: '#eb4b4b',
-    id: 7
+    id: 7,
+    price: 10000
   },
   {
     name: 'gold',
     color: 'gold',
-    id: 8
+    id: 8,
+    price: 100000
   },
 ]
 
@@ -57,22 +65,38 @@ const MySet = () => {
   const [results, setResults] = useState<number>();
   const [unlocks, setUnlocks] = useState<string[]>();
 
-  const Ship = ({url, name, unlocked, color}: {url: string, name: string, unlocked: boolean, color: string}) => {
-  
+  const Ship = ({url, name, unlocked, id, price }: {url: string, name: string, unlocked: boolean, id: number, price: number}) => {
+    
+    const onBuyCallback = (err: any, txHash: string) => {
+      console.log(txHash)
+    }
+
+    const onBuy = async () => {
+      await nft.buy(myWallet(), id, onBuyCallback)
+    }
+
     return <div className="m-1 w-[256px] lg:w-[128px] pt-4 rounded-md flex flex-col items-center bg-black hover:-translate-y-2 transition-all duration-150">
       <img src={url} className="w-[128px] lg:w-[64px]" />
       <p className="text-white text-xs mt-2">{name.toUpperCase()}</p>
-      <button onClick={() => onShipSelect(url)} className={`btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 ${unlocked? 'bg-black' : 'bg-primary'}`}>{unlocked ? "unlocked" : "get" }</button>
+      <p className="text-white text-xs mt-2">{price}</p>
+      
+      {
+        unlocked ? 
+        <button onClick={() => onShipSelect(url) } className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-black">unlocked</button>
+        : score && (score >= price) ? 
+          <button onClick={() => onBuy()} className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">buy</button>
+        : <button className="btn btn-xs text-white rounded-md w-11/12 mt-4 m-1 bg-primary">{score}/{price}</button>
+      }
     </div>
   }
 
   const onShipSelect = (url: string) => {
+    setSelectedShip(url)
     localStorage.setItem('spacebit_ship', url)
   }
 
   const getScores = async () => {
     const promises = ships.map((ship) => contract.balanceOf(myWallet(), ship.id))
-
     return Promise.all(promises)
   }
 
@@ -114,7 +138,6 @@ const MySet = () => {
           <h2>Your stats 📘</h2>
           <p>Total SBit balance: {score || 0}</p>
 
-
           {(results && results > 0) ? <div className="my-4">
             <p>You have <strong>{results}</strong> unclaimed SBits</p>
             <button onClick={onClaim} className="btn btn-sm btn-primary my-2">Claim</button>
@@ -124,7 +147,7 @@ const MySet = () => {
         <section className="w-full lg:w-1/3">
           <h2>Current streak 🏅</h2>
           <p >
-            Each streak number adds <strong>{`x${MULTIPLIER}`}</strong> multiplier to your game score.
+            Each streak number adds <strong>{`x${ 1 + (localStorage.spacebit_streak || 1) * MULTIPLIER}`}</strong> multiplier to your game score.
             Play at least once game per day to earn the streak.
           </p>
           { 
@@ -135,7 +158,7 @@ const MySet = () => {
             // </div> : 
             localStorage.spacebit_streak ? 
             <p className="text-primary text-lg mt-4">
-              Your current streak is <strong>{localStorage.spacebit_streak}</strong> (x{localStorage.spacebit_streak * MULTIPLIER}) 🏆
+              Your current streak is <strong>{localStorage.spacebit_streak}</strong> (x{1 + (localStorage.spacebit_streak || 1) * MULTIPLIER}) 🏆
             </p> :
             <p className="text-primary">
               You dont have any streak. 
@@ -156,9 +179,9 @@ const MySet = () => {
           <h2>Current progress 📈</h2>
           
           {/* <p>You need <strong>234</strong> points for next level</p> */}
-          <ul className="w-full steps steps-vertical lg:steps-horizontal">
-            {ships.map((url, i) => <li className={`step text-sm ${unlocks && unlocks[i] != '0'? 'step-primary' : ''}`}>
-              <span>{ships[i].name.toUpperCase()}</span>
+          <ul className="w-full steps text-white steps-vertical lg:steps-horizontal">
+            {ships.map((ship, i) => <li className={`step text-sm ${unlocks && unlocks[i] != '0'? 'step-primary' : ''}`}>
+              <span>{ship.name.toUpperCase()}</span>
             </li> )}
           </ul>
         </section>
@@ -166,7 +189,7 @@ const MySet = () => {
         <section>
           <h2>All unlockables 🎖🎖🎖</h2>
           <div className='w-full flex flex-col items-center lg:justify-center lg:flex-row'>
-            {ships.map((url, i) => <Ship color={ships[i].color} unlocked={unlocks && unlocks[i] != '0' ? true : false} url={require(`../assets/ships/ship-${ships[i].name}.png`)} name={ships[i].name} />  )}
+            {ships.map((ship, i) => <Ship price={ship.price} id={ship.id} unlocked={unlocks && unlocks[i] != '0' ? true : false} url={require(`../assets/ships/ship-${ship.name}.png`)} name={ship.name} />  )}
           </div>
         </section>
         

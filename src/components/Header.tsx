@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { checkWalletAccounts, nft } from "../contracts";
+import { checkWalletAccounts, contract, nft } from "../contracts";
 import { freeSkinRedeemed, myWallet } from "../utils";
 
 const Header = () => {
     const [wallet, setWallet] = useState<string>();
+    const [freeRedeemed, setFreeRedeemed] = useState<boolean>(true);
 
     const loadWallet = async () => {
         const wallet = await checkWalletAccounts();
         setWallet(wallet)
         localStorage.setItem('spacebit_wallet', wallet)
+    }
+
+    const checkFreeRedeemed = async () => {
+        setFreeRedeemed(await contract.balanceOf(myWallet(), 1) != '0')
     }
     
     const onRedeemCallback = (err: any, txHash: string) => {
@@ -28,12 +33,13 @@ const Header = () => {
 
     useEffect(() => {
         loadWallet()
+        checkFreeRedeemed()
     }, [])
 
     return (
         <>
             {
-                freeSkinRedeemed() ? null : 
+                freeRedeemed ? null : 
                     <div className="relative w-full px-4 py-3 text-white bg-primary pr-14">
                     <p className="text-sm font-medium text-left sm:text-center">
                         Get your first free playable skin!

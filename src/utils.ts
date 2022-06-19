@@ -5,7 +5,7 @@ export const freeSkinRedeemed = () => {
 export const myWallet = () => localStorage.spacebit_wallet
 
 export const setToken = (token: string) => {
-    localStorage.setItem('bitspace_token', token)
+    localStorage.setItem('spacebit_token', token)
 }
 
 export const getListFromDocs = (docs: any) => {
