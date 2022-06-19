@@ -18,7 +18,7 @@ export class Token {
 		this.web3 = new Web3(this.currentWindow.ethereum);
 		this.address = address;
 		this.contract = new this.web3.eth.Contract(this.CONTRACT_ABI, address);
-		this.defaultGasPrice = 20000000000;
+		this.defaultGasPrice = 300000;
 	}
 
     async gasPrice() {
@@ -26,10 +26,8 @@ export class Token {
 	}
 
 	async getReward(sender: string, amount: number, callback: any){
-        const prec: any = new BigNumber(10).pow(new BigNumber(18));
-		let weiAmount: any = new BigNumber(amount).times(prec);
 		let gasPrice = await this.gasPrice();
-		const tx = this.contract.methods.getreward(toBN(weiAmount));
+		const tx = this.contract.methods.getreward(amount);
 		let gasLimit = 150000;
 		try {
 			gasLimit = await tx.estimateGas({ value: 0, from: sender, to: this.address });

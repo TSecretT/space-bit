@@ -42,7 +42,7 @@ const Home = () => {
                     </h1>
 
                     <p className="mt-4 sm:leading-relaxed sm:text-xl">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt illo tenetur fuga ducimus numquam ea!
+                        {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt illo tenetur fuga ducimus numquam ea! */}
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-4 mt-8">
